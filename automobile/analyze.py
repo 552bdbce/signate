@@ -12,7 +12,6 @@ data['weight_log'] = np.log(data['weight'])
 
 # get car manufacturer from 'car name'
 data['car name'] = data['car name'].str.replace(r'([^\s]+).*', r'\1', regex=True)
-print(data['car name'])
 
 X = data[['cylinders', 'displacement_log', 'horsepower', 'weight_log', 'acceleration', 'model year', 'origin', 'car name']]
 X = pd.get_dummies(X)  # 各説明変数のダミー変数化

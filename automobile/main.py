@@ -6,19 +6,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression as LR
 from sklearn.metrics import mean_squared_error as MSE
 
-
-# データの読み込み
 data = pd.read_csv('./data/train.tsv', sep='\t')
-
-# idの削除
 data = data.drop(columns=['id'])
 data = data[data.horsepower != '?']
-
-# 欠損値を含む行の削除
 data = data.dropna()
+data['displacement_log'] = np.log(data['displacement'])
+data['weight_log'] = np.log(data['weight'])
 
-# 目的変数と説明変数の準備
-X = data[['cylinders', 'displacement', 'horsepower', 'weight', 'acceleration', 'model year', 'origin']]
+# get car manufacturer from 'car name'
+# data['car name'] = data['car name'].str.replace(r'([^\s]+).*', r'\1', regex=True)
+
+X = data[['cylinders', 'displacement_log', 'horsepower', 'weight_log', 'acceleration', 'model year', 'origin']]
 y = data['mpg']
 
 # 学習用データと評価用データの分割
