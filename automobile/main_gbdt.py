@@ -1,10 +1,13 @@
 import numpy as np
 import pandas as pd
+import xgboost as xgb
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression as LR
 from sklearn.metrics import mean_squared_error as MSE
 from sklearn.preprocessing import LabelEncoder
+from xgboost import XGBClassifier
+from sklearn.model_selection import GridSearchCV
 
 
 # -----------------------------------
@@ -51,9 +54,13 @@ test_x = test.copy()
 # -----------------------------------
 # 特徴量作成
 # -----------------------------------
-train_x = train_x.drop(columns=['car name', 'horsepower'])
-test_y = test_x.drop(columns=['car name', 'horsepower'])
-test_x = test_x.drop(columns=['id', 'car name', 'horsepower'])
+train_x = train_x.drop(columns=['car name'])
+train_x['horsepower'] = train_x['horsepower'].astype(float)
+test_x = test_x.drop(columns=['id', 'car name'])
+test_x['horsepower'] = test_x['horsepower'].astype(float)
+
+# dtrain = xgb.DMatrix(train_x, label=train_y)
+# dtest = xgb.DMatrix(test_x.values)
 
 
 # それぞれのカテゴリ変数にlabel encodingを適用する
@@ -69,9 +76,15 @@ test_x = test_x.drop(columns=['id', 'car name', 'horsepower'])
 # -----------------------------------
 # モデル作成
 # -----------------------------------
-from xgboost import XGBClassifier
+# xgboostモデルの作成
+# reg = xgb.XGBRegressor()
+#
+# # ハイパーパラメータ探索
+# reg_cv = GridSearchCV(reg, {'max_depth': [2,4,6], 'n_estimators': [50,100,200]}, verbose=1)
+# reg_cv.fit(train_x, train_y)
+
 # モデルの作成および学習データを与えての学習
-model = XGBClassifier(n_estimators=20, random_state=71)
+model = xgb.XGBRegressor()
 model.fit(train_x, train_y)
 
 # テストデータの予測値を確率で出力する
